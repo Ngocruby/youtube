@@ -9,14 +9,12 @@ var tip = d3.tip()
             })
 
 var margin = {top: 0, right: 0, bottom: 0, left: 0},
-            width = 960 - margin.left - margin.right,
-            height = 500 - margin.top - margin.bottom;
+            width = window.outerWidth - margin.left - margin.right,
+            height = window.outerHeight - margin.top - margin.bottom;
 
 var color = d3.scaleThreshold()
     .domain([10000,100000,500000,1000000,5000000,10000000,50000000,100000000,500000000,1500000000])
     .range(["rgb(247,251,255)", "rgb(222,235,247)", "rgb(198,219,239)", "rgb(158,202,225)", "rgb(107,174,214)", "rgb(66,146,198)","rgb(33,113,181)","rgb(8,81,156)","rgb(8,48,107)","rgb(3,19,43)"]);
-
-var path = d3.geoPath();
 
 var svg = d3.select("body")
             .append("svg")
@@ -26,8 +24,8 @@ var svg = d3.select("body")
             .attr('class', 'map');
 
 var projection = d3.geoMercator()
-                   .scale(130)
-                  .translate( [width / 2, height / 1.5]);
+                   .scale(200)
+                  .translate([width/2, height/1.5]);
 
 var path = d3.geoPath().projection(projection);
 
@@ -35,14 +33,14 @@ svg.call(tip);
 
 queue()
     .defer(d3.json, "world_countries.json")
-    .defer(d3.tsv, "world_population.tsv")
+    .defer(d3.json, "youtube.json")
     .await(ready);
 
-function ready(error, data, population) {
-  var populationById = {};
+function ready(error, data, youtube) {
+  console.log(youtube);
 
-  population.forEach(function(d) { populationById[d.id] = +d.population; });
-  data.features.forEach(function(d) { d.population = populationById[d.id] });
+  var videos = youtube.videos;
+  var overlay = youtube.overlay;
 
   svg.append("g")
       .attr("class", "countries")
@@ -50,7 +48,20 @@ function ready(error, data, population) {
       .data(data.features)
     .enter().append("path")
       .attr("d", path)
-      .style("fill", function(d) { return color(populationById[d.id]); })
+      .style("fill", function(country) {
+        console.log(country);
+        var id = country.id; // Get Country ID in World Map
+        var video = videos.filter(function(video) {
+          return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
+        });
+        console.log(video); // Print video
+        if (video[0]) { // Check if video exists
+          var videoId = video[0].video.id; // Get Video ID
+          var color = overlay[videoId].color; // Get Color
+          return color;
+        }
+        return '#aaaaaa';
+      })
       .style('stroke', 'white')
       .style('stroke-width', 1.5)
       .style("opacity",0.8)
