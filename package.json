@@ -1,0 +1,26 @@
+{
+  "name": "youtube",
+  "version": "1.0.0",
+  "description": "Youtube",
+  "main": "server.js",
+  "scripts": {
+    "test": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ngocruby/youtube.git"
+  },
+  "keywords": [
+    "YouTube"
+  ],
+  "author": "Ngoc",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ngocruby/youtube/issues"
+  },
+  "homepage": "https://github.com/Ngocruby/youtube#readme",
+  "dependencies": {
+    "d3": "^5.4.0",
+    "jquery": "^3.3.1"
+  }
+}
