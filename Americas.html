@@ -27,24 +27,23 @@
             <a class="navbar-brand">Music Map</a>
             <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Top Music Video
+                    <a class="nav-link" href="index.php">Top Music Video
                         <span class="sr-only">(current)</span>
                     </a>
                 </li>
-           
+                
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         Top Genre
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                        <a class="dropdown-item" id="chart" href="chart.html">World</a>
-                        <a class="dropdown-item" id="Asia" href="Asia.html">Asia</a>
-                        <a class="dropdown-item" id="Americas" href="Americas.html">Americas</a>
-                        <a class="dropdown-item" id="Afrika" href="Afrika.html">Afrika</a>
-                        <a class="dropdown-item" id="Europa" href="Europa.html">Europa</a>
-                        <a class="dropdown-item" id="Polaer" href="Polar.html">Polar</a>
-                        <a class="dropdown-item" id="Oceania" href="Oceania.html">Oceania</a>
-                    </div>
+                            <a class="dropdown-item" href="chart.html">World</a>
+                            <a class="dropdown-item" href="Asia.html">Asia</a>
+                            <a class="dropdown-item" href="Americas.html">Americas</a>
+                            <a class="dropdown-item" href="Afrika.html">Afrika</a>
+                            <a class="dropdown-item" href="Europa.html">Europa</a>
+                            <a class="dropdown-item" href="Polar.html">Polar</a>
+                            <a class="dropdown-item" href="Oceania.html">Oceania</a>                    </div>
                 </li>
 
             </ul>
@@ -55,21 +54,10 @@
         <div class="row">
             <div class="col-12">
                 <div id="svg"></div>
-                <div>Top Genre in der Welt</div>
+                <div>Top Genre in Americas </div>
             </div>
         </div>
     </div>
-    <script language="javascript">
- 
-            document.getElementById("chart").onclick = function () {
-                document.getElementById("content").style.display = 'block';
-            };
- 
-            document.getElementById("Asia").onclick = function () {
-                document.getElementById("content").style.display = 'block';
-            };
- 
-        </script>
     <script>
 
         var margin = {
@@ -108,8 +96,11 @@
 
         svg.call(tip);
         console.log("CHART")
-        d3.json("json/chart.json", function (error, data) {
+        d3.json("json/youtube.json", function (error, youtube) {
+            console.log(youtube);
+            var data = youtube.genresForRegions.Americas;
             console.log(data);
+
             x.domain(data.map(function (d) {
                 return d.genre;
             }));

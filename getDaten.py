@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import requests  # funktion dan link
 import json  # funktion format file json
 
@@ -12,14 +14,17 @@ def getYoutube():
     # regions
     regions = []
     for country in countries:
-        regions.append(country.get('region'))#"region" aus "countries" rausnehmen und zu "regions=[]" hinzufügen 
-    regions = list(set(regions)) #region filter
+        regions.append(country.get('region')) # region aus countries rausnehmen und zu hinzufugen 
+    regions = list(set(regions)) # region filter
     regions = [r for r in regions if r != '']
     regions.sort()
     print(regions)
+
+    
     #genres
     #topic duoc viet duoi dang array
     topics = {
+        # music
         "/m/04rlf": "Music",
         "/m/05fw6t": "Children's music",
         "/m/02mscn": "Christian music",
@@ -35,7 +40,62 @@ def getYoutube():
         "/m/06cqb": "Reggae",
         "/m/06j6l": "Rhythm and blues",
         "/m/06by7": "Rock music",
-        "/m/0gywn": "Soul music"
+        "/m/0gywn": "Soul music",
+        #gaming
+        "/m/0bzvm2":"Gaming",
+        "/m/025zzc":"Action game",
+        "/m/02ntfj":" Action-adventure game",
+        "/m/0b1vjn":" Casual game",
+        "/m/02hygl":"Music video game",
+        "/m/04q1x3q":"Puzzle video game",
+        "/m/01sjng":" Racing video game",
+        "/m/0403l3g":"Role-playing video game",
+        "/m/021bp2":" Simulation video game",
+        "/m/022dc6":"Sports game",
+        "/m/03hf_rm":"Strategy video game",
+        #sport
+        "/m/06ntj":"Sports",
+        "/m/0jm_":" American football",
+        "/m/018jz":" Baseball",
+        "/m/018w8":" Basketball",
+        "/m/01cgz":" Boxing",
+        "/m/09xp_":" Cricket",
+        "/m/02vx4":" Football",
+        "/m/037hz":"Golf",
+        "/m/03tmr":"Ice hockey",
+        "/m/01h7lh":"Mixed martial arts",
+        "/m/0410tth":"Motorsport",
+        "/m/066wd":" Professional wrestling",
+        "/m/07bs0":" Tennis",
+        "/m/07_53":" Volleyball",
+        #entertainment
+        "/m/02jjt":" Entertainment",
+        "/m/095bb":" Animated cartoon",
+        "/m/09kqc":" Humor",
+        "/m/02vxn":"Movies",
+        "/m/05qjc":" Performing arts",
+        "/m/02jjt":" Entertainment",
+        "/m/095bb":" Animated cartoon",
+        "/m/09kqc":" Humor",
+        "/m/02vxn":"Movies",
+        "/m/05qjc":" Performing arts",
+        #lifestyle
+        "/m/019_rr":"Lifestyle",
+        "/m/032tl":"Fashion",
+        "/m/027x7n":"Fitness",
+        "/m/02wbm":"Food",
+        "/m/0kt51":"Health",
+        "/m/03glg":"Hobby",
+        "/m/068hy":"Pets",
+        "/m/041xxh":"Physical attractiveness [Beauty]",
+        "/m/07c1v":"Technology",
+        "/m/07bxq":" Tourism",
+        "/m/07yv9":"Vehicles",
+        #others
+        "/m/01k8wb":"Knowledge",
+        "/m/098wr":"Society",
+
+    
     }
     #Schleife
     index = 0
@@ -51,29 +111,30 @@ def getYoutube():
         if 'items' in response:
             items = response['items']
             if len(items):
-                video = items[0]
-                obj = {}
-                obj['alpha2Code'] = alpha2Code
-                obj['alpha3Code'] = alpha3Code
-                obj['region'] = region
-                obj['name'] = name
-                obj['video'] = video
-                videos.append(obj)
+                firstVideo = items[0]
+                video = {}
+                video['alpha2Code'] = alpha2Code
+                video['alpha3Code'] = alpha3Code
+                video['region'] = region
+                video['name'] = name
+                video['video'] = firstVideo
+                videos.append(video)
 
-    # Genres
+    # Genres For All
     genres = {}
     for v in videos:
         topicIds = v['video']['topicDetails']['relevantTopicIds'] #nhung Item o API
         topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
-        topic = '' #cái này là string mới đc đặt và rỗng
-        if len(topicIds):# độ dài của topicIds phải tồn tại
-            topic = topicIds[0]#gắn giá trị đầu tiên của topicIds vào topic
+        topic = '' #cai nay la string moi dc dat va rong 
+        if len(topicIds):#  do dai cua topicIDs phai ton tai
+            topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
         else:
             topic = '/m/04rlf'
         if topic not in genres:
             genres[topic] = 1
         else:
             genres[topic] += 1
+    
     # Totals
     for v in videos:
         vID = v['video']['id']
@@ -156,12 +217,41 @@ def getYoutube():
         overlay[key]['color'] = colors[index]
         index += 1
     print("OVERLAY")
+# Genres For Regions
+    genresForRegions = {} #obj rong
+    for vi in videos: #schleife
+        region = vi['region']
+        if region not in genresForRegions:
+            genresForRegions[region] = {}
+        topicIds = vi['video']['topicDetails']['relevantTopicIds'] #nhung Item o API
+        topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
+        topic = '' 
+        if len(topicIds):
+            topic = topicIds[0]
+        else:
+            topic = '/m/04rlf'
+        if topic not in genresForRegions[region]:
+            genresForRegions[region][topic] = 1
+        else:
+            genresForRegions[region][topic] += 1
+    print(genresForRegions)
+    genresForRegions2 = {}
+#########################################################################
+    for region in genresForRegions:
+        genresArray = []
+        for genre in genresForRegions[region]:
+            obj = {}
+            obj['genre'] = topics[genre]
+            obj['total'] = genresForRegions[region][genre]
+            genresArray.append(obj)
+        genresForRegions2[region] = genresArray
 
     youtube = {}
     #youtube['genres'] = genres
     youtube['top'] = top
     youtube['videos'] = videos
     youtube['overlay'] = overlay
+    youtube['genresForRegions'] = genresForRegions2
     
     print("YOUTUBE")
     with open('./json/youtube.json', 'w') as outfile:
