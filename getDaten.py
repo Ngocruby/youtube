@@ -19,10 +19,6 @@ def getYoutube():
     regions = [r for r in regions if r != '']
     regions.sort()
     print(regions)
-<<<<<<< HEAD
-
-=======
->>>>>>> 3b01a65d4e9ae38650d7596063fc270939d1bf19
     
     #genres
     #topic duoc viet duoi dang array
@@ -128,15 +124,9 @@ def getYoutube():
     for v in videos:
         topicIds = v['video']['topicDetails']['relevantTopicIds'] #nhung Item o API
         topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
-<<<<<<< HEAD
         topic = '' #cai nay la string moi dc dat va rong 
         if len(topicIds):#  do dai cua topicIDs phai ton tai
             topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
-=======
-        topic = '' #cái này là string mới đc đặt và rỗng
-        if len(topicIds):# neu độ dài của topicIds tồn tại
-            topic = topicIds[0]#thi gắn giá trị đầu tiên của topicIds vào topic
->>>>>>> 3b01a65d4e9ae38650d7596063fc270939d1bf19
         else:
             topic = '/m/04rlf'
          # dem genre xuat hien bn lan   
@@ -246,7 +236,7 @@ def getYoutube():
             genresForRegions[region][topic] += 1
     print(genresForRegions)
     genresForRegions2 = {}
-#########################################################################
+
     for region in genresForRegions:
         genresArray = []
         for genre in genresForRegions[region]:
