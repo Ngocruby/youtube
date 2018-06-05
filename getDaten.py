@@ -221,8 +221,7 @@ def getYoutube():
     genresForRegions = {} #obj rong
     for vi in videos: #schleife
         region = vi['region']
-        if region not in genresForRegions:
-            genresForRegions[region] = {}
+        
         topicIds = vi['video']['topicDetails']['relevantTopicIds'] #nhung Item o API
         topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
         topic = '' 
@@ -235,6 +234,9 @@ def getYoutube():
         else:
             genresForRegions[region][topic] += 1
     print(genresForRegions)
+     
+    
+    
     genresForRegions2 = {}
 
     for region in genresForRegions:

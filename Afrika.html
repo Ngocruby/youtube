@@ -96,11 +96,11 @@
 
         svg.call(tip);
         console.log("CHART")
-        d3.json("json/youtube.json", function (error, youtube) {
+        d3.json("json/youtube.json", function (error, youtube) {  // HOI HIEU
             console.log(youtube);
             var data = youtube.genresForRegions.Africa;
             console.log(data);
-
+        
             x.domain(data.map(function (d) {
                 return d.genre;
             }));
