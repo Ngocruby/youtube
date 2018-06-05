@@ -247,6 +247,10 @@ def getYoutube():
             obj['total'] = genresForRegions[region][genre]
             genresArray.append(obj)
         genresForRegions2[region] = genresArray
+    
+    # print("genresforregions2")
+    # with open('./json/genreforregion2.json', 'w') as outfile:
+    #     json.dump(genresForRegions2, outfile)    
 
     youtube = {}
     #youtube['genres'] = genres
