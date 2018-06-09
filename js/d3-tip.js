@@ -168,9 +168,9 @@
       return tip
     }
 
-    function d3TipDirection() { return 'n' }
-    function d3TipOffset() { return [0, 0] }
-    function d3TipHTML() { return ' ' }
+    function d3TipDirection() { return 'n'; }
+    function d3TipOffset() { return [0, 0]; }
+    function d3TipHTML() { return ' '; }
 
     var directionCallbacks = d3Collection.map({
           n:  directionNorth,

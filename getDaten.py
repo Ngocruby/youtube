@@ -11,7 +11,7 @@ def getYoutube():
     #Database
     videos = []
     total = {}
-    # regions
+    # lands
     regions = []
     for country in countries:
         regions.append(country.get('region')) # region aus countries rausnehmen und zu hinzufugen 
@@ -93,6 +93,8 @@ def getYoutube():
         #others
         "/m/01k8wb":"Knowledge",
         "/m/098wr":"Society",
+        "/m/0f2f9":"TV Show",
+        "/m/01h6rj": "Military"
 
     
     }
@@ -103,7 +105,7 @@ def getYoutube():
         alpha2Code = country['alpha2Code']
         alpha3Code = country['alpha3Code']
         region = country['region']
-        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
+        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
         response = requests.get(url=url2).json()
         index += 1
         print(str(index) + '/' + str(len(countries)))
@@ -111,33 +113,37 @@ def getYoutube():
             items = response['items']
             if len(items):
                 firstVideo = items[0]
-                video = {}
-                video['alpha2Code'] = alpha2Code
-                video['alpha3Code'] = alpha3Code
-                video['region'] = region
-                video['name'] = name
-                video['video'] = firstVideo
-                videos.append(video)
+                videoObject = {}
+                videoObject['alpha2Code'] = alpha2Code
+                videoObject['alpha3Code'] = alpha3Code
+                videoObject['region'] = region
+                videoObject['name'] = name
+                videoObject['video'] = firstVideo
+                videoObject['items'] = items
+                videos.append(videoObject)
 
     # Genres For All
     genres = {}
-    for v in videos:
-        topicIds = v['video']['topicDetails']['relevantTopicIds'] #nhung Item o API
-        topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
-        topic = '' #cai nay la string moi dc dat va rong 
-        if len(topicIds):#  do dai cua topicIDs phai ton tai
-            topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
-        else:
-            topic = '/m/04rlf'
-         # dem genre xuat hien bn lan   
-        if topic not in genres: 
-            genres[topic] = 1 
-        else:
-            genres[topic] += 1
-    
+    for videoObject in videos:
+        items = videoObject['items']
+        for item in items:
+            if 'topicDetails' in item:
+                topicIds = item['topicDetails']['relevantTopicIds'] #             oItems of API
+                topicIds = [x for x in topicIds if x != '/m/04rlf'] # Music filter
+                topic = '' #cai nay la string moi dc dat va rong 
+                if len(topicIds):#  do dai cua topicIDs phai ton tai
+                    topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
+                else:
+                    topic = '/m/04rlf'
+            # dem genre xuat hien bn lan   
+            if topic not in genres: 
+                genres[topic] = 1 
+            else:
+                genres[topic] += 1
+
     # Totals
-    for v in videos:
-        vID = v['video']['id']
+    for videoObject in videos:
+        vID = videoObject['video']['id']
         if vID not in total:
             total[vID] = 1
         else:
@@ -177,7 +183,7 @@ def getYoutube():
         '#9accff',  # Blue
         '#99ffcd',  # Blue Green
         '#99ff99',  # Green
-        '#cdfe67',  #Yellow Green
+        '#cdfe67',  # Yellow Green
         '#ffffcd',  # Yellow
         '#feff98',  # Yellow Orange
         '#ffcc66',  # Orange
@@ -218,46 +224,50 @@ def getYoutube():
         index += 1
     print("OVERLAY")
 # Genres For Regions
-    genresForRegions = {} #obj rong
-    for vi in videos: #schleife
-        region = vi['region']
-        
-        topicIds = vi['video']['topicDetails']['relevantTopicIds'] #nhung Item o API
-        topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
-        topic = '' 
-        if len(topicIds):
-            topic = topicIds[0]
-        else:
-            topic = '/m/04rlf'
-        if topic not in genresForRegions[region]:
-            genresForRegions[region][topic] = 1
-        else:
-            genresForRegions[region][topic] += 1
-    print(genresForRegions)
+    genresForLand = {} #obj rong
+    for videoObject in videos: #schleife
+        land = videoObject['name']
+        items = videoObject['items']
+        for item in items:
+            topic = ''
+            topicIds = item['topicDetails']['relevantTopicIds'] #nhung Item o API
+            topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
+            if len(topicIds):
+                topic = topicIds[0]
+            else:
+                topic = '/m/04rlf'
+            if land not in genresForLand:
+                genresForLand[land] = {}
+            if topic not in genresForLand[land]:
+                genresForLand[land][topic] = 1
+            else:
+                genresForLand[land][topic] += 1
+            
+    print(genresForLand)
      
     
     
-    genresForRegions2 = {}
+    genresForLand2 = {}
 
-    for region in genresForRegions:
+    for land in genresForLand:
         genresArray = []
-        for genre in genresForRegions[region]:
+        for genre in genresForLand[land]:
             obj = {}
             obj['genre'] = topics[genre]
-            obj['total'] = genresForRegions[region][genre]
+            obj['total'] = genresForLand[land][genre]
             genresArray.append(obj)
-        genresForRegions2[region] = genresArray
+        genresForLand2[land] = genresArray
     
-    # print("genresforregions2")
-    # with open('./json/genreforregion2.json', 'w') as outfile:
-    #     json.dump(genresForRegions2, outfile)    
+    # print("genresforlands2")
+    # with open('./json/genreforland2.json', 'w') as outfile:
+    #     json.dump(genresForLand2, outfile)
 
     youtube = {}
     #youtube['genres'] = genres
     youtube['top'] = top
     youtube['videos'] = videos
     youtube['overlay'] = overlay
-    youtube['genresForRegions'] = genresForRegions2
+    youtube['genresForLand'] = genresForLand2
     
     print("YOUTUBE")
     with open('./json/youtube.json', 'w') as outfile:

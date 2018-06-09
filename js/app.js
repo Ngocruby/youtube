@@ -19,6 +19,7 @@ var width = window.outerWidth, // xac dinh chieu dai cua Browser -Detect Browser
 var svg = d3
   .select("body") // chon body element
   .append("svg") // them svg vao body - append la funktion
+  .attr("id", "map")
   .attr("width", width) // set do dai cho svg - attr la atrribut
   .attr("height", height) // set chieu cao cho svg
 /*
@@ -37,8 +38,8 @@ var path = d3.geoPath().projection(projection); // xac dinh duong ve theo projec
 svg.call(tip);
 
 queue() // bat dau xep hang
-  .defer(d3.json, "json/world_countries.json") // dan file json
-  .defer(d3.json, "json/youtube.json")
+  .defer(d3.json, "./json/world_countries.json") // dan file json
+  .defer(d3.json, "./json/youtube.json")
   .await(ready); // goi funktion ve ban do
 
 var player;
@@ -73,7 +74,6 @@ function ready(error, world_countries, youtube) {
       var filterVideos = videos.filter(function (video) {
         return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
       }); // return la truth or falsch tuong duong vs if
-      console.log(filterVideos);
       if (filterVideos[0]) {
         // Check if video exists
         var videoId = filterVideos[0].video.id; // Get Video ID
@@ -86,7 +86,6 @@ function ready(error, world_countries, youtube) {
       var filterVideos = videos.filter(function (video) {
         return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
       }); // return la truth or falsch tuong duong vs if
-      console.log(filterVideos);
       if (filterVideos[0]) {
         // Check if video exists
         var videoId = filterVideos[0].video.id; // Get Video ID
@@ -139,7 +138,7 @@ function ready(error, world_countries, youtube) {
       .translate([width / 2, height / 1.5]);
 
     d3.select("article").attr("width", width).attr("height", height);
-    d3.select("svg").attr("width", width).attr("height", height);
+    d3.select("svg#map").attr("width", width).attr("height", height);
     d3.selectAll("path").attr('d', path);
   });
   svg

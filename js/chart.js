@@ -1,167 +1,123 @@
-var format = d3.format(",");
+console.log('lala')
+var margin = {
+    top: 100,
+    right: 10,
+    bottom: 20,
+    left: 30
+  },
+  height2 = 500 - margin.top - margin.bottom;
 
-// Set tooltips
-var tip = d3
-  .tip()
-  .attr("class", "d3-tip")
+var x = d3.scaleBand()
+  .rangeRound([0, $('#bar').width()], .1);
+
+var y = d3.scaleLinear()
+  .range([height2, 0]);
+
+var xAxis = d3.axisBottom(x)
+
+var yAxis = d3.axisLeft(y)
+
+var tip2 = d3.tip()
+  .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) {
-    return (
-      "<strong>Country: </strong><span class='details'>" +
-      d.properties.name +
-      "<br></span>"
-    );
-  });
+    return "<strong>Total:</strong> <span style='color:red'>" + d.total + "</span>";
+  })
+console.log(height2)
+var svg2 = d3.select("#bar").append("svg")
+  .attr("height", height2 + margin.top + margin.bottom)
+  .append("g")
+  .attr("id", "chart")
+  .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var width = window.outerWidth, // xac dinh chieu dai cua Browser -Detect Browser-Width
-  height = window.outerHeight; //xac dinh chieu cao
+svg2.call(tip2);
+console.log("CHART");
+var genresForLand;
+d3.json("./json/youtube.json", function (error, youtube) {
+  genresForLand = youtube.genresForLand;
+  console.log(genresForLand);
 
-var svg = d3
-  .select("body") // chon body element
-  .append("svg") // them svg vao body - append la funktion
-  .attr("width", width) // set do dai cho svg - attr la atrribut
-  .attr("height", height) // set chieu cao cho svg
-/*
-.append("g") // them element g vao trong svg - g viet tat cua group
-.attr("class", "map"); // them attribu class ten map - add attribut
-*/
-var path = d3.geoPath();
+  var countryKeys = Object.keys(genresForLand); //lay het tat ca cac key(ten cac nuoc)
+  console.log(countryKeys);
+  // Dropdown Countries
+  var myDiv = document.getElementById("myDiv");
 
-var projection = d3
-  .geoMercator() // tao projection Mercator
-  .scale(150) // xet do zoom- so cang nho zoom cang nhieu
-  .translate([width / 2, height / 1.5]); // xac dinh toa do
+  //Create and append select list
+  var selectList = document.createElement("select");
+  selectList.setAttribute("id", "mySelect");
+  myDiv.appendChild(selectList);
 
-var path = d3.geoPath().projection(projection); // xac dinh duong ve theo projection
-
-svg.call(tip);
-
-queue() // bat dau xep hang
-  .defer(d3.json, "json/world_countries.json") // dan file json
-  .defer(d3.json, "json/youtube.json")
-  .await(ready); // goi funktion ve ban do
-
-var player;
-
-function ready(error, world_countries, youtube) {
-  console.log(world_countries); // log la in ra trong console
-  console.log(youtube);
-  var videos = youtube.videos; // videos va overlay la objekt trong file youtube goi ra de su dung
-  var overlay = youtube.overlay;
-  var top = youtube.top;
-
-  player = new YT.Player("player", {
-    height: "360",
-    width: "400",
-    videoId: top[0],
-    events: {
-      onReady: onPlayerReady,
-      onStateChange: onPlayerStateChange
-    }
-  });
-
-  var g = svg.append("g")
-
-  g.attr("class", "countries")
-    .selectAll("path") // chon tat ca path trong group countries
-    .data(world_countries.features) //features la objekt trong world_countries
-    .enter()
-    .append("path") // hanh dong ve
-    .attr("d", path) // them atrribut net ve la d
-    .attr("id", function (country) {
-      var id = country.id; // Get Country ID in World Map
-      var filterVideos = videos.filter(function (video) {
-        return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
-      }); // return la truth or falsch tuong duong vs if
-      console.log(filterVideos);
-      if (filterVideos[0]) {
-        // Check if video exists
-        var videoId = filterVideos[0].video.id; // Get Video ID
-        return videoId;
-      }
-      return "";
-    })
-    .style("fill", function (country) {
-      var id = country.id; // Get Country ID in World Map
-      var filterVideos = videos.filter(function (video) {
-        return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
-      }); // return la truth or falsch tuong duong vs if
-      console.log(filterVideos);
-      if (filterVideos[0]) {
-        // Check if video exists
-        var videoId = filterVideos[0].video.id; // Get Video ID
-        var color = overlay[videoId].color; // Get Color
-        return color;
-      }
-      return "#aaaaaa";
-    })
-    .style("stroke", "white") // cho vien mau trang
-    .style("stroke-width", 1.5) // do dam nhat cua vien
-    .style("opacity", 0.8) // do transparent
-    .on("click", function (d) {
-      var id = d3.select(this).attr("id");
-
-      player.loadVideoById({
-        //load video
-        videoId: id
-      });
-      player.playVideo(); // chay video
-    })
-    .on("mouseover", function (d) {
-      // neu de chuot vao
-      d3
-        .select(this) // this dc tu hieu la path vi selectALL o tren
-        .style("opacity", 1)
-        .style("stroke-width", 3);
-      tip.show(d);
-    })
-    .on("mouseout", function (d) {
-      // neu di chuot ra
-      d3
-        .select(this)
-        .style("opacity", 0.8)
-        .style("stroke-width", 1.5);
-      tip.hide(d);
-    });
-
-  // zoom and pan
-  var zoom = d3.zoom().scaleExtent([1, 40]).on('zoom', () => {
-    g.attr('transform', d3.event.transform) // updated for d3 v4
-  });
-  svg.call(zoom);
-  // Resize
-  d3.select(window).on('resize', () => {
-    width = window.innerWidth;
-    height = window.innerHeight;
-
-    projection
-      .scale(200)
-      .translate([width / 2, height / 1.5]);
-
-    d3.select("article").attr("width", width).attr("height", height);
-    d3.select("svg").attr("width", width).attr("height", height);
-    d3.selectAll("path").attr('d', path);
-  });
-  svg
-    .append("path")
-    .datum(topojson.mesh(world_countries.features, function (a, b) {
-      return a.id !== b.id;
-    }))
-    // .datum(topojson.mesh(data.features, function(a, b) { return a !== b; }))
-    .attr("class", "names")
-    .attr("d", path);
-
-  function onPlayerReady(event) {
-    event.target.playVideo();
+  //Create and append the options
+  for (var i = 0; i < countryKeys.length; i++) {
+    var option = document.createElement("option");
+    option.setAttribute("value", countryKeys[i]);
+    option.text = countryKeys[i];
+    selectList.appendChild(option);
   }
 
-  function onPlayerStateChange(event) {
-    if (event.data === YT.PlayerState.ENDED) {
-      player.playVideo();
-    }
-  }
+  var country = countryKeys[0]; // take the 1st value on coutryKey
+
+  var data = genresForLand[country];
+  console.log(data);
+
+  drawMap(data);
+});
+
+function type(d) {
+  d.total = +d.total;
+  return d;
 }
 
-$('.player').click(function () {
-  $('.player').toggleClass('active');
+$(document).on('change', '#mySelect', function (event) { // dectect thay do cua ID: mySelect
+  console.log(event);
+  var value = event.target.value;
+  console.log(value);
+  var data = genresForLand[value];
+  console.log(data);
+  drawMap(data);
 });
+
+function drawMap(data) {  // define ve bieu do vao 1 funktion
+  $("g#chart").html('');
+
+  x.domain(data.map(function (d) {
+    return d.genre;
+  }));
+
+  y.domain([0, d3.max(data, function (d) {
+    return d.total;
+  })]);
+
+  svg2.append("g")
+    .attr("id", "bars")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height2 + ")")
+    .call(xAxis);
+
+  svg2.append("g")
+    .attr("class", "y axis")
+    .call(yAxis)
+    .append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 6)
+    .attr("dy", ".71em")
+    .style("text-anchor", "end")
+    .text("Total");
+
+  svg2.selectAll(".bar")
+    .data(data)
+    .enter().append("rect")
+    .attr("class", "bar")
+    .attr("x", function (d) {
+      return x(d.genre);
+    })
+    .attr("width", x.bandwidth())
+    .attr("y", function (d) {
+      return y(d.total);
+    })
+    .attr("height", function (d) {
+      return height2 - y(d.total);
+    })
+    .on('mouseover', tip2.show)
+    .on('mouseout', tip2.hide);
+}
