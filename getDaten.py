@@ -223,7 +223,7 @@ def getYoutube():
         overlay[key]['color'] = colors[index]
         index += 1
     print("OVERLAY")
-# Genres For Regions
+# Genres For Lands
     genresForLand = {} #obj rong
     for videoObject in videos: #schleife
         land = videoObject['name']
