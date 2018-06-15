@@ -55,7 +55,7 @@ d3.json("./json/youtube.json", function (error, youtube) {
     selectList.appendChild(option);
   }
 
-  var country = countryKeys[0]; // take the 1st value on coutryKey
+  var country = countryKeys[0]; // take the 1st value on coutryKey (in this case: Afghanistan)
 
   var data = genresForLand[country];
   console.log(data);
@@ -76,6 +76,7 @@ $(document).on('change', '#mySelect', function (event) { // dectect thay do cua 
   console.log(data);
   drawMap(data);
 });
+
 
 function drawMap(data) {  // define ve bieu do vao 1 funktion
   $("g#chart").html('');
