@@ -105,7 +105,7 @@ def getYoutube():
         alpha2Code = country['alpha2Code']
         alpha3Code = country['alpha3Code']
         region = country['region']
-        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
+        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode='+alpha2Code +'&videoCategoryId=10'
         response = requests.get(url=url2).json()
         index += 1
         print(str(index) + '/' + str(len(countries)))
@@ -123,23 +123,23 @@ def getYoutube():
                 videos.append(videoObject)
 
     # Genres For All
-    genres = {}
-    for videoObject in videos:
-        items = videoObject['items']
-        for item in items:
-            if 'topicDetails' in item:
-                topicIds = item['topicDetails']['relevantTopicIds'] #             oItems of API
-                topicIds = [x for x in topicIds if x != '/m/04rlf'] # Music filter
-                topic = '' #cai nay la string moi dc dat va rong 
-                if len(topicIds):#  do dai cua topicIDs phai ton tai
-                    topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
-                else:
-                    topic = '/m/04rlf'
-            # dem genre xuat hien bn lan   
-            if topic not in genres: 
-                genres[topic] = 1 
-            else:
-                genres[topic] += 1
+    # genres = {}
+    # for videoObject in videos:
+    #     items = videoObject['items']
+    #     for item in items:
+    #         if 'topicDetails' in item:
+    #             topicIds = item['topicDetails']['relevantTopicIds'] #             oItems of API
+    #             topicIds = [x for x in topicIds if x != '/m/04rlf'] # Music filter
+    #             topic = '' #cai nay la string moi dc dat va rong 
+    #             if len(topicIds):#  do dai cua topicIDs phai ton tai
+    #                 topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
+    #             else:
+    #                 topic = '/m/04rlf'
+    #         # dem genre xuat hien bn lan   
+    #         if topic not in genres: 
+    #             genres[topic] = 1 
+    #         else:
+    #             genres[topic] += 1
 
     # Totals
     for videoObject in videos:
