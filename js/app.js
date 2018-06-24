@@ -51,10 +51,10 @@ function ready(error, world_countries, youtube) {
   var overlay = youtube.overlay;
   var top = youtube.top;
 
-  player = new YT.Player("player", {
+  player = new YT.Player("player", { //wireframe für Musik-Video
     height: "360",
     width: "400",
-    videoId: top[0],
+    videoId: top[0], // die ID von beliebtesten Video rausnehmen
     events: {
       onReady: onPlayerReady,
       onStateChange: onPlayerStateChange
@@ -97,7 +97,7 @@ function ready(error, world_countries, youtube) {
     .style("stroke", "white") // cho vien mau trang
     .style("stroke-width", 1.5) // do dam nhat cua vien
     .style("opacity", 0.8) // do transparent
-    .on("click", function (d) {
+    .on("click", function (d) {   // Video taucht auf wenn click auf jeden Land
       var id = d3.select(this).attr("id");
 
       player.loadVideoById({
@@ -150,11 +150,11 @@ function ready(error, world_countries, youtube) {
     .attr("class", "names")
     .attr("d", path);
 
-  function onPlayerReady(event) {
+  function onPlayerReady(event) { //start to load Video
     event.target.playVideo();
   }
 
-  function onPlayerStateChange(event) {
+  function onPlayerStateChange(event) { //repeat the Video
     if (event.data === YT.PlayerState.ENDED) {
       player.playVideo();
     }

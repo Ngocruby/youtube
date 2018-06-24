@@ -5,21 +5,22 @@ import json  # funktion format file json
 
 
 def getYoutube():
-    url = 'https://restcountries.eu/rest/v2/all' 
-    r = requests.get(url) #als Text lesen, verlinken
-    countries = r.json() #Format unter Json
+    url = 'https://restcountries.eu/rest/v2/all'
+    r = requests.get(url)  #als Text lesen, verlinken
+    countries = r.json()  #Format unter Json
     #Database
     videos = []
     total = {}
     # lands
     regions = []
     for country in countries:
-        regions.append(country.get('region')) # region aus countries rausnehmen und zu hinzufugen 
-    regions = list(set(regions)) # region filter
+        regions.append(country.get(
+            'region'))  # region aus countries rausnehmen und zu hinzufugen
+    regions = list(set(regions))  # region filter
     regions = [r for r in regions if r != '']
     regions.sort()
     print(regions)
-    
+
     #genres
     #topic duoc viet duoi dang array
     topics = {
@@ -41,62 +42,60 @@ def getYoutube():
         "/m/06by7": "Rock music",
         "/m/0gywn": "Soul music",
         #gaming
-        "/m/0bzvm2":"Gaming",
-        "/m/025zzc":"Action game",
-        "/m/02ntfj":" Action-adventure game",
-        "/m/0b1vjn":" Casual game",
-        "/m/02hygl":"Music video game",
-        "/m/04q1x3q":"Puzzle video game",
-        "/m/01sjng":" Racing video game",
-        "/m/0403l3g":"Role-playing video game",
-        "/m/021bp2":" Simulation video game",
-        "/m/022dc6":"Sports game",
-        "/m/03hf_rm":"Strategy video game",
+        "/m/0bzvm2": "Gaming",
+        "/m/025zzc": "Action game",
+        "/m/02ntfj": " Action-adventure game",
+        "/m/0b1vjn": " Casual game",
+        "/m/02hygl": "Music video game",
+        "/m/04q1x3q": "Puzzle video game",
+        "/m/01sjng": " Racing video game",
+        "/m/0403l3g": "Role-playing video game",
+        "/m/021bp2": " Simulation video game",
+        "/m/022dc6": "Sports game",
+        "/m/03hf_rm": "Strategy video game",
         #sport
-        "/m/06ntj":"Sports",
-        "/m/0jm_":" American football",
-        "/m/018jz":" Baseball",
-        "/m/018w8":" Basketball",
-        "/m/01cgz":" Boxing",
-        "/m/09xp_":" Cricket",
-        "/m/02vx4":" Football",
-        "/m/037hz":"Golf",
-        "/m/03tmr":"Ice hockey",
-        "/m/01h7lh":"Mixed martial arts",
-        "/m/0410tth":"Motorsport",
-        "/m/066wd":" Professional wrestling",
-        "/m/07bs0":" Tennis",
-        "/m/07_53":" Volleyball",
+        "/m/06ntj": "Sports",
+        "/m/0jm_": " American football",
+        "/m/018jz": " Baseball",
+        "/m/018w8": " Basketball",
+        "/m/01cgz": " Boxing",
+        "/m/09xp_": " Cricket",
+        "/m/02vx4": " Football",
+        "/m/037hz": "Golf",
+        "/m/03tmr": "Ice hockey",
+        "/m/01h7lh": "Mixed martial arts",
+        "/m/0410tth": "Motorsport",
+        "/m/066wd": " Professional wrestling",
+        "/m/07bs0": " Tennis",
+        "/m/07_53": " Volleyball",
         #entertainment
-        "/m/02jjt":" Entertainment",
-        "/m/095bb":" Animated cartoon",
-        "/m/09kqc":" Humor",
-        "/m/02vxn":"Movies",
-        "/m/05qjc":" Performing arts",
-        "/m/02jjt":" Entertainment",
-        "/m/095bb":" Animated cartoon",
-        "/m/09kqc":" Humor",
-        "/m/02vxn":"Movies",
-        "/m/05qjc":" Performing arts",
+        "/m/02jjt": " Entertainment",
+        "/m/095bb": " Animated cartoon",
+        "/m/09kqc": " Humor",
+        "/m/02vxn": "Movies",
+        "/m/05qjc": " Performing arts",
+        "/m/02jjt": " Entertainment",
+        "/m/095bb": " Animated cartoon",
+        "/m/09kqc": " Humor",
+        "/m/02vxn": "Movies",
+        "/m/05qjc": " Performing arts",
         #lifestyle
-        "/m/019_rr":"Lifestyle",
-        "/m/032tl":"Fashion",
-        "/m/027x7n":"Fitness",
-        "/m/02wbm":"Food",
-        "/m/0kt51":"Health",
-        "/m/03glg":"Hobby",
-        "/m/068hy":"Pets",
-        "/m/041xxh":"Physical attractiveness [Beauty]",
-        "/m/07c1v":"Technology",
-        "/m/07bxq":" Tourism",
-        "/m/07yv9":"Vehicles",
+        "/m/019_rr": "Lifestyle",
+        "/m/032tl": "Fashion",
+        "/m/027x7n": "Fitness",
+        "/m/02wbm": "Food",
+        "/m/0kt51": "Health",
+        "/m/03glg": "Hobby",
+        "/m/068hy": "Pets",
+        "/m/041xxh": "Physical attractiveness [Beauty]",
+        "/m/07c1v": "Technology",
+        "/m/07bxq": " Tourism",
+        "/m/07yv9": "Vehicles",
         #others
-        "/m/01k8wb":"Knowledge",
-        "/m/098wr":"Society",
-        "/m/0f2f9":"TV Show",
+        "/m/01k8wb": "Knowledge",
+        "/m/098wr": "Society",
+        "/m/0f2f9": "TV Show",
         "/m/01h6rj": "Military"
-
-    
     }
     #Schleife
     index = 0
@@ -105,7 +104,7 @@ def getYoutube():
         alpha2Code = country['alpha2Code']
         alpha3Code = country['alpha3Code']
         region = country['region']
-        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode='+alpha2Code +'&videoCategoryId=10'
+        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
         response = requests.get(url=url2).json()
         index += 1
         print(str(index) + '/' + str(len(countries)))
@@ -122,37 +121,20 @@ def getYoutube():
                 videoObject['items'] = items
                 videos.append(videoObject)
 
-    # Genres For All
-    # genres = {}
-    # for videoObject in videos:
-    #     items = videoObject['items']
-    #     for item in items:
-    #         if 'topicDetails' in item:
-    #             topicIds = item['topicDetails']['relevantTopicIds'] #             oItems of API
-    #             topicIds = [x for x in topicIds if x != '/m/04rlf'] # Music filter
-    #             topic = '' #cai nay la string moi dc dat va rong 
-    #             if len(topicIds):#  do dai cua topicIDs phai ton tai
-    #                 topic = topicIds[0]# gan gt dau tien cua topicIds vao topic
-    #             else:
-    #                 topic = '/m/04rlf'
-    #         # dem genre xuat hien bn lan   
-    #         if topic not in genres: 
-    #             genres[topic] = 1 
-    #         else:
-    #             genres[topic] += 1
-
-    # Totals
+    # Totals for Top Music Video
     for videoObject in videos:
         vID = videoObject['video']['id']
         if vID not in total:
             total[vID] = 1
         else:
             total[vID] += 1
-        
+
     print(total)
 
     total_keys = total.keys()
-    total_values = sorted(total.values(), reverse=True)
+    total_values = sorted(
+        total.values(),
+        reverse=True)  # reverse um die häufigsten Wert zu kriegen
     top = []
     for value in total_values:
         for key in total_keys:
@@ -223,30 +205,33 @@ def getYoutube():
         overlay[key]['color'] = colors[index]
         index += 1
     print("OVERLAY")
-# Genres For Lands
-    genresForLand = {} #obj rong
-    for videoObject in videos: #schleife
+
+    # Genres For Lands um keys von topics zu nehmen(z.B./m/06ntj kann man nicht wissen, welche genre ist es)
+    genresForLand = {}  #leeren objekt
+    for videoObject in videos:  #schleife
         land = videoObject['name']
         items = videoObject['items']
         for item in items:
             topic = ''
-            topicIds = item['topicDetails']['relevantTopicIds'] #nhung Item o API
-            topicIds = [x for x in topicIds if x != '/m/04rlf'] # loc Music
-            if len(topicIds):
-                topic = topicIds[0]
-            else:
-                topic = '/m/04rlf'
-            if land not in genresForLand:
-                genresForLand[land] = {}
-            if topic not in genresForLand[land]:
-                genresForLand[land][topic] = 1
-            else:
-                genresForLand[land][topic] += 1
-            
+            if 'topicDetails' in item:
+                topicIds = item['topicDetails']['relevantTopicIds']  # Items of API
+
+                topicIds = [x for x in topicIds
+                            if x != '/m/04rlf']  #  Music Filter
+                if len(topicIds):
+                    topic = topicIds[0]
+                else:
+                    topic = '/m/04rlf'
+                if land not in genresForLand:
+                    genresForLand[land] = {}
+                if topic not in genresForLand[land]:
+                    genresForLand[land][topic] = 1
+                else:
+                    genresForLand[land][topic] += 1
+
     print(genresForLand)
-     
-    
-    
+
+    #Genres For Land2 um die value von topic zu nehmen(z.B. /m/06ntj ist sport)
     genresForLand2 = {}
 
     for land in genresForLand:
@@ -257,35 +242,19 @@ def getYoutube():
             obj['total'] = genresForLand[land][genre]
             genresArray.append(obj)
         genresForLand2[land] = genresArray
-    
-    # print("genresforlands2")
-    # with open('./json/genreforland2.json', 'w') as outfile:
-    #     json.dump(genresForLand2, outfile)
 
     youtube = {}
-    #youtube['genres'] = genres
+
     youtube['top'] = top
     youtube['videos'] = videos
     youtube['overlay'] = overlay
     youtube['genresForLand'] = genresForLand2
-    
+
     print("YOUTUBE")
     with open('./json/youtube.json', 'w') as outfile:
         json.dump(youtube, outfile)
-   # print('END')
 
-    top_genres = []
     
-    for genre in genres:
-        obj = {}
-        obj['genre'] = topics[genre]
-        obj['total'] = genres[genre]
-        top_genres.append(obj)
-
-    print("chart")
-    with open('./json/chart.json', 'w') as outfile:
-        json.dump(top_genres, outfile)
-     #print('END')
 
 
 getYoutube()

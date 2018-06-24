@@ -26,10 +26,10 @@ var svg = d3.select("#bar").append("svg")
 svg.call(tip2);
 
 var genresForLand;
-d3.json("./json/youtube.json", function (error, youtube) {
+d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
   genresForLand = youtube.genresForLand;
 
-  //lay het tat ca cac key(ten cac nuoc), Object.keys de chuyen Object thanh array
+  //alle key(Name des Landes) nehmen, Object.keys ist um die Object zu Array zu aendern
   var countryKeys = Object.keys(genresForLand);
 
   // Dropdown Countries
@@ -49,26 +49,27 @@ d3.json("./json/youtube.json", function (error, youtube) {
   }
 
   var country = countryKeys[0]; // take the 1st value on coutryKey (in this case: Afghanistan)
-
+  console.log(genresForLand);
+  console.log(country);
   var data = genresForLand[country];
 
   drawMap(data);
 });
 
-$(document).on('change', '#mySelect', function (event) { // phat hien thay do cua ID: mySelect
-  var value = event.target.value; // Lay ten nuoc
-  var data = genresForLand[value];// genre cho nuoc do
+$(document).on('change', '#mySelect', function (event) { // detect changes von ID:mySelect
+  var value = event.target.value; // take countries' names
+  var data = genresForLand[value];// genre for Land
   drawMap(data);
 });
 
 
-function drawMap(data) {  // define ve bieu do vao 1 funktion
+function drawMap(data) {  // define drawing Map in einer Funktion
   $("#chart").html('');
 
   // x-Achse
   var x = d3.scaleBand()
     .rangeRound([0, width], .1)
-    .padding(0.1);
+    .padding(0.1);              // Abstand zwischen Spalten
   //y-Achse
   var y = d3.scaleLinear()
     .range([height, 0]);
