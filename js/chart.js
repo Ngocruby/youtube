@@ -55,11 +55,6 @@ d3.json("./json/youtube.json", function (error, youtube) {
   drawMap(data);
 });
 
-/* function type(d) {
-  d.total = +d.total;
-  return d;
-} */
-
 $(document).on('change', '#mySelect', function (event) { // phat hien thay do cua ID: mySelect
   var value = event.target.value; // Lay ten nuoc
   var data = genresForLand[value];// genre cho nuoc do
