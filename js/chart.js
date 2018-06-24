@@ -1,51 +1,37 @@
 // Set margins
 var margin = {
-    top: 100,
-    right: 10,
-    bottom: 20,
-    left: 30
-  },
-  width = 960 - margin.left - margin.right,
-  height2 = 500 - margin.top - margin.bottom;
-// x-Achse
-var x = d3.scaleBand()
-  .rangeRound([0, $('#bar').width()], .1);
-//y-Achse
-var y = d3.scaleLinear()
-  .range([height2, 0]);
-
-//Use our X scale to set a bottom axis
-var xAxis = d3.axisBottom(x)
-// Same for our left axis
-var yAxis = d3.axisLeft(y)
+  top: 100,
+  right: 20,
+  bottom: 30,
+  left: 40
+};
+var width = 960 - margin.left - margin.right;
+var height = 500 - margin.top - margin.bottom;
 
 var tip2 = d3.tip()
   .attr('class', 'd3-tip')
   .offset([-10, 0])
   .html(function (d) {
     return "<strong>Total:</strong> <span style='color:red'>" + d.total + "</span>";
-  })
-console.log(height2)
+  });
 
 // Add our chart to the #bar div
-var svg2 = d3.select("#bar").append("svg")
+var svg = d3.select("#bar").append("svg")
   .attr("width", width + margin.left + margin.right)
-  .attr("height", height2 + margin.top + margin.bottom)
+  .attr("height", height + margin.top + margin.bottom)
   .append("g")
   .attr("id", "chart")
   .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg2.call(tip2);
-console.log("CHART");
+svg.call(tip2);
+
 var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) {
   genresForLand = youtube.genresForLand;
-  console.log(genresForLand); // nhan lai la 1 Object
 
- //lay het tat ca cac key(ten cac nuoc), Object.keys de chuyen Object thanh array
+  //lay het tat ca cac key(ten cac nuoc), Object.keys de chuyen Object thanh array
   var countryKeys = Object.keys(genresForLand);
-  console.log(countryKeys);
-  
+
   // Dropdown Countries
   var myDiv = document.getElementById("myDiv");
 
@@ -65,7 +51,6 @@ d3.json("./json/youtube.json", function (error, youtube) {
   var country = countryKeys[0]; // take the 1st value on coutryKey (in this case: Afghanistan)
 
   var data = genresForLand[country];
-  console.log(data);
 
   drawMap(data);
 });
@@ -76,17 +61,32 @@ d3.json("./json/youtube.json", function (error, youtube) {
 } */
 
 $(document).on('change', '#mySelect', function (event) { // phat hien thay do cua ID: mySelect
-  console.log(event);
   var value = event.target.value; // Lay ten nuoc
-  console.log(value);
   var data = genresForLand[value];// genre cho nuoc do
-  console.log(data);
   drawMap(data);
 });
 
 
 function drawMap(data) {  // define ve bieu do vao 1 funktion
   $("#chart").html('');
+
+  // x-Achse
+  var x = d3.scaleBand()
+    .rangeRound([0, width], .1)
+    .padding(0.1);
+  //y-Achse
+  var y = d3.scaleLinear()
+    .range([height, 0]);
+
+
+  //Use our X scale to set a bottom axis
+  var xAxis = d3.axisBottom(x)
+  // Same for our left axis
+  var yAxis = d3.axisLeft(y)
+
+  data.forEach(function (d) {
+    d.total = +d.total;
+  });
 
   x.domain(data.map(function (d) {
     return d.genre;
@@ -96,13 +96,13 @@ function drawMap(data) {  // define ve bieu do vao 1 funktion
     return d.total;
   })]);
 
-  svg2.append("g")
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis)
     .attr("id", "bars")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height2 + ")")
-    .call(xAxis);
+    .attr("class", "x axis");
 
-  svg2.append("g")
+  svg.append("g")
     .attr("class", "y axis")
     .call(yAxis)
     .append("text")
@@ -112,7 +112,7 @@ function drawMap(data) {  // define ve bieu do vao 1 funktion
     .style("text-anchor", "end")
     .text("Total");
 
-  svg2.selectAll(".bar")
+  svg.selectAll(".bar")
     .data(data)
     .enter().append("rect")
     .attr("class", "bar")
@@ -124,7 +124,7 @@ function drawMap(data) {  // define ve bieu do vao 1 funktion
       return y(d.total);
     })
     .attr("height", function (d) {
-      return height2 - y(d.total);
+      return height - y(d.total);
     })
     .on('mouseover', tip2.show)
     .on('mouseout', tip2.hide);
