@@ -104,7 +104,7 @@ def getYoutube():
         alpha2Code = country['alpha2Code']
         alpha3Code = country['alpha3Code']
         region = country['region']
-        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
+        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
         response = requests.get(url=url2).json()
         index += 1
         print(str(index) + '/' + str(len(countries)))

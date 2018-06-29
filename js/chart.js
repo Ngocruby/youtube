@@ -28,12 +28,13 @@ svg.call(tip2);
 var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
   genresForLand = youtube.genresForLand;
-
-  //alle key(Name des Landes) nehmen, Object.keys ist um die Object zu Array zu aendern
+console.log(genresForLand);
+  //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwanden
   var countryKeys = Object.keys(genresForLand);
+console.log(countryKeys);
 
   // Dropdown Countries
-  var myDiv = document.getElementById("myDiv");
+  var myDiv = document.getElementById("myDiv"); //myDiv befindet sich im File chart.html
 
   //Create and append select list
   var selectList = document.createElement("select");
