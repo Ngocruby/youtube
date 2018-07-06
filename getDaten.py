@@ -92,7 +92,7 @@ def getYoutube():
         "/m/07bxq": " Tourism",
         "/m/07yv9": "Vehicles",
         #others
-        "/m/01k8wb": "Knowledge",
+        "/m/01k8wb": "Knowledge", 
         "/m/098wr": "Society",
         "/m/0f2f9": "TV Show",
         "/m/01h6rj": "Military"
@@ -206,7 +206,7 @@ def getYoutube():
         index += 1
     print("OVERLAY")
 
-    # Genres For Lands um keys von topics zu nehmen(z.B./m/06ntj kann man nicht wissen, welche genre ist es)
+    # Genres For Lands um keys von topics zu nehmen(z.B./m/06ntj kann man nicht wissen, welche genre es ist)
     genresForLand = {}  #leeren objekt
     for videoObject in videos:  #schleife
         land = videoObject['name']
