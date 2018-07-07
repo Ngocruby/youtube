@@ -29,7 +29,8 @@ var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
   genresForLand = youtube.genresForLand;
 console.log(genresForLand);
-  //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwanden
+  //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwande
+  
   var countryKeys = Object.keys(genresForLand);
 console.log(countryKeys);
 
