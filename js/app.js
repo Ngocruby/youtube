@@ -1,3 +1,4 @@
+//Diese Datei ist für Zeichen das Music-Map, inklusive Zoom-Funktion
 var format = d3.format(",");
 
 // Set tooltips
@@ -13,15 +14,15 @@ var tip = d3
     );
   });
 
-var width = window.outerWidth, // xac dinh chieu dai cua Browser -Detect Browser-Width
-  height = window.outerHeight; //xac dinh chieu cao Detect Browser-Height
+var width = window.outerWidth, // Feststellen Browser-Breite
+  height = window.outerHeight; //Feststellen Browser-Höhe
 
 var svg = d3
-  .select("body") // chon body element
-  .append("svg") // them svg vao body - append la funktion
-  .attr("id", "map")
-  .attr("width", width) // set width for svg
-  .attr("height", height) // set height for svg
+  .select("body") // Selectieren body-element
+  .append("svg") // Hinzufügen svg zu body-element 
+  .attr("id", "map") 
+  .attr("width", width) // setzen die Breire für svg
+  .attr("height", height) // setzen die Höhe für svg
 /*
 .append("g") // them element g vao trong svg - g viet tat cua group
 .attr("class", "map"); // them attribu class ten map - add attribut
