@@ -13,9 +13,154 @@ def getYoutube():
     videos = [] #Wir stellen ein leeres Array videos um
     total = {} #Wir stellen ein leere Objekt totals um
 
+    #Schleife für die Übernehmung des Country-ID und -Alphacode in Restcountries zum YouTube-API
+    #Schleife fängt von erste Position(0) an 
+    #Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video (das Topvideo) und items(die 50 Topvideos).Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video( das Topvideo) und items(die 50 Topvideos).
+    index = 0
+    for country in countries:
+        name = country['name']
+        #alpha2code und alpha3code sind von Restcountries
+        alpha2Code = country['alpha2Code'] 
+        alpha3Code = country['alpha3Code']
+        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
+        response = requests.get(url=url2).json()
+        index += 1
+        print(str(index) + '/' + str(len(countries))) # zu beoachten das Prozess
+        if 'items' in response:
+            items = response['items']
+            if len(items):
+                firstVideo = items[0]
+                videoObject = {}
+                videoObject['alpha2Code'] = alpha2Code
+                videoObject['alpha3Code'] = alpha3Code
+                videoObject['name'] = name
+                videoObject['video'] = firstVideo
+                videoObject['items'] = items
+                videos.append(videoObject)
 
+    # Totals for Top Music Video
+    #Diese Schleife ist für die Häufigkeit des Videos zählen
+    for videoObject in videos:
+        vID = videoObject['video']['id'] #wir stellen neue Variable: vID,die ID von jedem Video repräsentiert.
+        if vID not in total: #wenn vID noch nicht im Objekt-total ist, dann ist es gleich 1
+            total[vID] = 1
+        else:
+            total[vID] += 1 #wenn vID schon im Objekt-total ist, dann plus 1
+
+    print(total)
+    #die Anzahl der Häufigkeit des Videos sortieren
+    # reverse um den häufigsten Wert zu kriegen, sonst bekommen wir der aufstiegende Wert
+    #ordnen ID des Videos nach der aufstiegenden Häufigkeit zu
+    total_keys = total.keys()
+    total_values = sorted( 
+        total.values(),
+        reverse=True)  
+    top = [] 
+    for value in total_values:
+        for key in total_keys:
+            if total[key] == value and key not in top:
+                top.append(key)
+                break
+
+    # Colors: Wir haben festgelegt, dass Farbe Rot als die am meinsten geschaute MV repräsentiert. Die folgende Stelle sind Lila, Blau, Green, Yellow, Orange.
+    colors = [
+        # Basic
+        '#ff0000',  # Red
+        '#cc0099',  # Red Violet
+        '#990099',  # Violet
+        '#660099',  # Blue Violet
+        '#0051d4',  # Blue
+        '#0bb4c3',  # Blue Green
+        '#009900',  # Green
+        '#66cc00',  #Yellow Green
+        '#ffff00',  # Yellow
+        '#ffcc00',  # Yellow Orange
+        '#ff9900',  # Orange
+        '#ff6600',  # Red Orange
+        # White
+        '#ff999a',  # Red
+        '#ff99ff',  # Red Violet
+        '#b89eb8',  # Violet
+        '#9999cd',  # Blue Violet
+        '#9accff',  # Blue
+        '#99ffcd',  # Blue Green
+        '#99ff99',  # Green
+        '#cdfe67',  # Yellow Green
+        '#ffffcd',  # Yellow
+        '#feff98',  # Yellow Orange
+        '#ffcc66',  # Orange
+        '#ff9968',  # Red Orange
+        # Gray
+        '#cb7c7f',  # Red
+        '#ca6699',  # Red Violet
+        '#986699',  # Violet
+        '#6669a',  # Blue Violet
+        '#9b99ca',  # Blue
+        '#5d9c9c',  # Blue Green
+        '#679966',  # Green
+        '#9acc99',  #Yellow Green
+        '#cccb66',  # Yellow
+        '#cccd32',  # Yellow Orange
+        '#cc9900',  # Orange
+        '#cb9966',  # Red Orange
+        # Black
+        '#9b0300',  # Red
+        '#660032',  # Red Violet
+        '#673266',  # Violet
+        '#653396',  # Blue Violet
+        '#003399',  # Blue
+        '#006766',  # Blue Green
+        '#006600',  # Green
+        '#679801',  #Yellow Green
+        '#999a01',  # Yellow
+        '#cf9700',  # Yellow Orange
+        '#cd6600',  # Orange
+        '#9a3400',  # Red Orange
+    ]
+    #ordnen Farbe nach der aufstiegenden Haeufigkeit des Laenders zu
+    overlay = {} 
+    index = 0
+    for key in top:
+        overlay[key] = {} 
+        overlay[key]['total'] = total[key] #den Value aus dem Objekt-total anhand des Keys und zuweisen zu overlay[key]['total'] herausnehmen 
+        overlay[key]['color'] = colors[index] #den Value aus dem Objekt-colors anhand des Keys und zuweisen zu overlay[key]['color'] herausnehmen 
+        index += 1
+    print("OVERLAY")
+
+    # Genres For Lands um keys von topics zu nehmen(z.B./m/06ntj)
+    genresForLand = {}  #leeren objekt
     
-    # Objekt-topics erhält alle genres, die in Youtube ist
+    for videoObject in videos:  #schleife
+        land = videoObject['name'] # das Key "Name" von jedem videoObjekt herausnehmen 
+        items = videoObject['items'] #das Key "items" von jedem videoObjekt herausnehmen 
+        for item in items: #Schleife in items
+            topic = ''
+            if 'topicDetails' in item:
+                topicIds = item['topicDetails']['relevantTopicIds']  # die Genre-ID von jedem Video und zuweisen zu Variable-topicIds herausnehmen 
+                # Manche MusikVideo hat mehrere Genres, einer von diesen ist nur "Music". Wir versuchen die Genre "Music" zu vermeiden. 
+                topicIds = [x for x in topicIds
+                            if x != '/m/04rlf'] #/m/04rlf ist Genre "Music"  
+                if len(topicIds): #Falls topicIds existiert,
+                    topic = topicIds[0] #wir nehmen das Topic in der erste Position
+                else:
+                    topic = '/m/04rlf' #wenn nicht, nehmen wir troztdem /m/04rlf (Music)
+                # Wenn variable land nicht in Objekt genresForLand, dann erstellen wir das leeres Objekt land in genresForLand
+                if land not in genresForLand: 
+                    genresForLand[land] = {}
+                # Falls variable topic nicht in Objekt genresForLand, wenn das Topic noch nicht auftaucht, wird es als Wert 1 festgelegt, sonst +1 addiert.
+                if topic not in genresForLand[land]:
+                    genresForLand[land][topic] = 1  #wenn vID noch nicht im Objekt-total ist, dann ist es gleich 1
+                else:
+                    genresForLand[land][topic] += 1#wenn vID schon im Objekt-total ist, dann ist plus 1
+
+    print(genresForLand)
+
+    #Genres For Land2 um die value von topic zu nehmen(z.B. /m/06ntj kann man nicht wissen, welche genre es ist. Hier in genresForLand2 werden wir wissen, dass /m/06ntj Sport ist)
+    
+    
+    genresForLand2 = {}
+
+# Objekt-topics erhält alle genres, die in Youtube ist
     topics = {
         # music
         "/m/04rlf": "Music",
@@ -91,173 +236,30 @@ def getYoutube():
         "/m/01h6rj": "Military"
     }
 
-    #Schleife für die Übernehmung des Country-ID und -Alphacode in Restcountries zum YouTube-API
-    #Schleife fängt von erste Position(0) an 
-    #Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video (das Topvideo) und items(die 50 Topvideos).Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video( das Topvideo) und items(die 50 Topvideos).
-    index = 0
-    for country in countries:
-        name = country['name']
-        #alpha2code und alpha3code sind von Restcountries
-        alpha2Code = country['alpha2Code'] 
-        alpha3Code = country['alpha3Code']
-        url2 = 'https://www.googleapis.com/youtube/v3/videos?key=AIzaSyBpu8hgnXbkqFVWrAvwRUEz7T13ii3I7WM&part=snippet,topicDetails,statistics&maxResults=50&chart=mostPopular&regionCode=' + alpha2Code + '&videoCategoryId=10'
-        response = requests.get(url=url2).json()
-        index += 1
-        print(str(index) + '/' + str(len(countries)))#####
-        if 'items' in response:
-            items = response['items']
-            if len(items):
-                firstVideo = items[0]
-                videoObject = {}
-                videoObject['alpha2Code'] = alpha2Code
-                videoObject['alpha3Code'] = alpha3Code
-                videoObject['name'] = name
-                videoObject['video'] = firstVideo
-                videoObject['items'] = items
-                videos.append(videoObject)
-
-    # Totals for Top Music Video
-    #Diese Schleife ist für die Häufigkeit des Videos zählen
-    for videoObject in videos:
-        vID = videoObject['video']['id'] #wir stellen neue Variable: vID,die ID von jedem Video repräsentiert. ####
-        if vID not in total: #wenn vID noch nicht im Objekt-total ist, dann ist es gleich 1
-            total[vID] = 1
-        else:
-            total[vID] += 1 #wenn vID schon im Objekt-total ist, dann plus 1
-
-    print(total)
-    #die Anzahl der Häufigkeit des Videos sortieren
-    total_keys = total.keys()
-    total_values = sorted( 
-        total.values(),
-        reverse=True)  # reverse um den häufigsten Wert zu kriegen, sonst bekommen wir der aufstiegende Wert
-    #ordnen ID des Videos nach der aufstiegenden Häufigkeit zu
-    top = [] ####
-    for value in total_values:
-        for key in total_keys:
-            if total[key] == value and key not in top:
-                top.append(key)
-                break
-
-    # Colors: Wir haben festgelegt, dass Farbe Rot als die am meinsten geschaute MV repräsentiert. Die folgende Stelle sind Lila, Blau, Green, Yellow, Orange.
-    colors = [
-        # Basic
-        '#ff0000',  # Red
-        '#cc0099',  # Red Violet
-        '#990099',  # Violet
-        '#660099',  # Blue Violet
-        '#0051d4',  # Blue
-        '#0bb4c3',  # Blue Green
-        '#009900',  # Green
-        '#66cc00',  #Yellow Green
-        '#ffff00',  # Yellow
-        '#ffcc00',  # Yellow Orange
-        '#ff9900',  # Orange
-        '#ff6600',  # Red Orange
-        # White
-        '#ff999a',  # Red
-        '#ff99ff',  # Red Violet
-        '#b89eb8',  # Violet
-        '#9999cd',  # Blue Violet
-        '#9accff',  # Blue
-        '#99ffcd',  # Blue Green
-        '#99ff99',  # Green
-        '#cdfe67',  # Yellow Green
-        '#ffffcd',  # Yellow
-        '#feff98',  # Yellow Orange
-        '#ffcc66',  # Orange
-        '#ff9968',  # Red Orange
-        # Gray
-        '#cb7c7f',  # Red
-        '#ca6699',  # Red Violet
-        '#986699',  # Violet
-        '#6669a',  # Blue Violet
-        '#9b99ca',  # Blue
-        '#5d9c9c',  # Blue Green
-        '#679966',  # Green
-        '#9acc99',  #Yellow Green
-        '#cccb66',  # Yellow
-        '#cccd32',  # Yellow Orange
-        '#cc9900',  # Orange
-        '#cb9966',  # Red Orange
-        # Black
-        '#9b0300',  # Red
-        '#660032',  # Red Violet
-        '#673266',  # Violet
-        '#653396',  # Blue Violet
-        '#003399',  # Blue
-        '#006766',  # Blue Green
-        '#006600',  # Green
-        '#679801',  #Yellow Green
-        '#999a01',  # Yellow
-        '#cf9700',  # Yellow Orange
-        '#cd6600',  # Orange
-        '#9a3400',  # Red Orange
-    ]
-    #ordnen Farbe nach der aufstiegenden Haeufigkeit des Laenders zu
-    overlay = {} ###
-    index = 0
-    for key in top:
-        overlay[key] = {}
-        overlay[key]['total'] = total[key]
-        overlay[key]['color'] = colors[index]
-        index += 1
-    print("OVERLAY")
-
-    # Genres For Lands um keys von topics zu nehmen(z.B./m/06ntj)
-    genresForLand = {}  #leeren objekt
-    ###
-    for videoObject in videos:  #schleife
-        land = videoObject['name'] #herausnehmen den Wert "Name" vom Array-videos
-        items = videoObject['items'] #herausnehmen den Wert"items" vom Array-items
-        for item in items: #Schleife in items
-            topic = ''
-            if 'topicDetails' in item:
-                topicIds = item['topicDetails']['relevantTopicIds']  # herausnehmen die Genre-ID von jedem Video und zuweisen zu Variable-topicIds 
-                # Manche MusikVideo hat mehrere Genres, einer von diesen ist nur "Music". Wir versuchen die Genre "Music" zu vermeiden. 
-                topicIds = [x for x in topicIds
-                            if x != '/m/04rlf'] #/m/04rlf ist Genre "Music"  
-                if len(topicIds): #Falls topicIds existiert,
-                    topic = topicIds[0] #nehmen wir das Topic in der erste Position
-                else:
-                    topic = '/m/04rlf' #wenn nicht, nehmen wir troztdem /m/04rlf (Music)
-                # Wenn variable land nicht in Objekt genresForLand, dann erstellen wir das leeres Objekt land in genresForLand
-                if land not in genresForLand: 
-                    genresForLand[land] = {}
-                # Falls variable topic nicht in Objekt genresForLand, wenn das Topic noch nicht auftaucht, wird es als Wert 1 festgelegt, sonst +1 addiert.
-                if topic not in genresForLand[land]:
-                    genresForLand[land][topic] = 1  #wenn vID noch nicht im Objekt-total ist, dann ist es gleich 1
-                else:
-                    genresForLand[land][topic] += 1#wenn vID schon im Objekt-total ist, dann ist plus 1
-
-    print(genresForLand)
-
-    #Genres For Land2 um die value von topic zu nehmen(z.B. /m/06ntj kann man nicht wissen, welche genre es ist. Hier in genresForLand2 werden wir wissen, dass /m/06ntj Sport ist)
-    genresForLand2 = {}
-
 #Diese Schleife ist um die gesamte Genre für bestimmte Land sortieren.
     for land in genresForLand:
         genresArray = []
         for genre in genresForLand[land]:
             obj = {}
-            obj['genre'] = topics[genre]
-            obj['total'] = genresForLand[land][genre]
-            genresArray.append(obj)
-        genresForLand2[land] = genresArray
+            obj['genre'] = topics[genre] #den Value (Name von Genres) aus dem Objekt-Topics anhand des Keys und zuweisen zum obj['genre'] herausnehmen 
+            obj['total'] = genresForLand[land][genre] #den Value (Häufigkeit von Genres) aus dem Objekt-genresForLand und zuweisen zum obj['total'] herausnehmen 
+            genresArray.append(obj) # Objekt-obj zu genresArray hinzufügen
+        genresForLand2[land] = genresArray  #zuweisen zu genresforLand2[land]
 
 # Wir stellen neue Objekt und dann alle Daten darein zuweisen
-    youtube = {}
+    
+    youtube = {} # Wir stellen neue Objekt-youtube 
 
-    youtube['top'] = top
-    youtube['videos'] = videos
-    youtube['overlay'] = overlay
-    youtube['genresForLand'] = genresForLand2
+    youtube['top'] = top # Array-Top zum Key " youtube['top']" hinzufügen 
+    youtube['videos'] = videos # Array-videos zum Key " youtube['videos']" hinzufügen 
+    youtube['overlay'] = overlay #  Array-Top zum Key " youtube['overlay']" hinzufügen 
+    youtube['genresForLand'] = genresForLand2 # Array-Top zum Key " youtube['genresForLand']" hinzufügen 
 
     print("YOUTUBE")
-    with open('./json/youtube.json', 'w') as outfile:
+    with open('./json/youtube.json', 'w') as outfile: # wir speichern die Daten in einem nachträglichen Json-Datei
         json.dump(youtube, outfile)
 
     
 
 
-getYoutube()
+getYoutube() #  Funktion läuft

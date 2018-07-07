@@ -1,3 +1,4 @@
+// Diese Datei ist BarChart aus D3-Bibliothek für Top-Genres
 // Set margins
 var margin = {
   top: 100,
@@ -27,34 +28,34 @@ svg.call(tip2);
 
 var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
-  genresForLand = youtube.genresForLand;
+  genresForLand = youtube.genresForLand; // herausnehmen das Objekt-genresForLand
   console.log(genresForLand);
   //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwanden
-  var countryKeys = Object.keys(genresForLand);
+  var countryKeys = Object.keys(genresForLand); // stellen neue Array-countryKeys um den Name jedes Land herzunehmen
   console.log(countryKeys);
 
   // Dropdown Countries
-  var myDiv = document.getElementById("myDiv"); //myDiv befindet sich im File chart.html
+  var myDiv = document.getElementById("myDiv"); //myDiv befindet sich in Datei chart.html
 
   //Create and append select list
-  var selectList = document.createElement("select");
-  selectList.setAttribute("id", "mySelect");
-  myDiv.appendChild(selectList);
+  var selectList = document.createElement("select"); // für Select-HTML
+  selectList.setAttribute("id", "mySelect"); //  stellen die ID für Select-HTML
+  myDiv.appendChild(selectList); // hinzufügen "selectList" zu Element "myDiv"
 
   //Create and add the Options to the DropDownList.
-  for (var i = 0; i < countryKeys.length; i++) {
-    var option = document.createElement("option");
-    option.setAttribute("value", countryKeys[i]);
-    option.text = countryKeys[i];
-    selectList.appendChild(option);
+  for (var i = 0; i < countryKeys.length; i++) {  //schleife 
+    var option = document.createElement("option"); // erstellen Obtion-HTML
+    option.setAttribute("value", countryKeys[i]); // hinzufügen  "Value"
+    option.text = countryKeys[i]; // erstellen "Text"
+    selectList.appendChild(option); // hinzufügen "option" zu "selectList"
   }
 
   var country = countryKeys[0]; // take the 1st value on coutryKey (in this case: Afghanistan)
   console.log(genresForLand);
   console.log(country);
-  var data = genresForLand[country];
+  var data = genresForLand[country]; // herausnehmen Data für jedes Land
 
-  drawMap(data);
+  drawMap(data); // Funktion "drawMap" läuft
 });
 
 $(document).on('change', '#mySelect', function (event) { // detect changes von ID:mySelect
@@ -64,7 +65,7 @@ $(document).on('change', '#mySelect', function (event) { // detect changes von I
 });
 
 
-function drawMap(data) { // define drawing Map in einer Funktion
+function drawMap(data) { // define drawing Map in a function
   $("#chart").html('');
 
   // x-Achse

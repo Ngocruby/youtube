@@ -1,4 +1,4 @@
-//Diese Datei ist für Zeichen das Music-Map, inklusive Zoom-Funktion
+//Diese Datei ist aus D3-Bibliothek für das Zeichen des Music-Maps, inklusive Zoom-Funktion
 var format = d3.format(",");
 
 // Set tooltips
@@ -20,39 +20,36 @@ var width = window.outerWidth, // Feststellen Browser-Breite
 var svg = d3
   .select("body") // Selectieren body-element
   .append("svg") // Hinzufügen svg zu body-element 
-  .attr("id", "map") 
+  .attr("id", "map") // Hinzufügen neue Attribute "id",
   .attr("width", width) // setzen die Breire für svg
   .attr("height", height) // setzen die Höhe für svg
-/*
-.append("g") // them element g vao trong svg - g viet tat cua group
-.attr("class", "map"); // them attribu class ten map - add attribut
-*/
+
 var path = d3.geoPath();
 
 var projection = d3
-  .geoMercator() // tao projection Mercator
-  .scale(150) // xet do zoom- so cang nho zoom cang nhieu
-  .translate([width / 2, height / 1.5]); // xac dinh toa do
+  .geoMercator() // projection Mercator erstellen
+  .scale(150) // je mehr die Nummer ist, desto mehr zoomt es ein
+  .translate([width / 2, height / 1.5]); // Koordinaten festlegen
 
-var path = d3.geoPath().projection(projection); // xac dinh duong ve theo projection
+var path = d3.geoPath().projection(projection);
 
 svg.call(tip);
 
-queue() // bat dau xep hang
-  .defer(d3.json, "./json/world_countries.json") // dan file json
+queue() 
+  .defer(d3.json, "./json/world_countries.json") // Json Datei verlinken
   .defer(d3.json, "./json/youtube.json")
-  .await(ready); // goi funktion ve ban do
+  .await(ready); //Funktion zu Weltkarte aufrufen
 
 var player;
 
 function ready(error, world_countries, youtube) {
-  console.log(world_countries); // log la in ra trong console
+  console.log(world_countries); 
   console.log(youtube);
-  var videos = youtube.videos; // videos va overlay la objekt trong file youtube goi ra de su dung
+  var videos = youtube.videos; // Objekt-videos und Objekt-overlay sind aus Datei youtube.json. Sie werden hier aufgerufen 
   var overlay = youtube.overlay;
   var top = youtube.top;
 
-  player = new YT.Player("player", { //wireframe fuer Musik-Video
+  player = new YT.Player("player", { //wireframe für Musik-Video
     height: "360",
     width: "400",
     videoId: top[0], // die ID von beliebtesten Video rausnehmen
@@ -65,16 +62,16 @@ function ready(error, world_countries, youtube) {
   var g = svg.append("g")
 
   g.attr("class", "countries")
-    .selectAll("path") // chon tat ca path trong group countries
-    .data(world_countries.features) //features la objekt trong world_countries
+    .selectAll("path") //select all path in group countries
+    .data(world_countries.features) //features is a object from world_countries
     .enter()
-    .append("path") // hanh dong ve
-    .attr("d", path) // them atrribut net ve la d
+    .append("path") 
+    .attr("d", path) 
     .attr("id", function (country) {
       var id = country.id; // Get Country ID in World Map
       var filterVideos = videos.filter(function (video) {
-        return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
-      }); // return la truth or falsch tuong duong vs if
+        return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Map
+      }); 
       if (filterVideos[0]) {
         // Check if video exists
         var videoId = filterVideos[0].video.id; // Get Video ID
@@ -85,8 +82,8 @@ function ready(error, world_countries, youtube) {
     .style("fill", function (country) {
       var id = country.id; // Get Country ID in World Map
       var filterVideos = videos.filter(function (video) {
-        return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Mao
-      }); // return la truth or falsch tuong duong vs if
+        return video.alpha3Code === id; // check if country ID in Videos is the same as country ID in World Map
+      }); // return is truth or falsch like vs if
       if (filterVideos[0]) {
         // Check if video exists
         var videoId = filterVideos[0].video.id; // Get Video ID
@@ -95,9 +92,9 @@ function ready(error, world_countries, youtube) {
       }
       return "#aaaaaa";
     })
-    .style("stroke", "white") // cho vien mau trang
-    .style("stroke-width", 1.5) // do dam nhat cua vien
-    .style("opacity", 0.8) // do transparent
+    .style("stroke", "white") // weiser Rand
+    .style("stroke-width", 1.5) // Randbreite
+    .style("opacity", 0.8) // transparent
     .on("click", function (d) {   // Video taucht auf wenn click auf jeden Land
       var id = d3.select(this).attr("id");
 
@@ -105,18 +102,18 @@ function ready(error, world_countries, youtube) {
         //load video
         videoId: id
       });
-      player.playVideo(); // chay video
+      player.playVideo(); // play video
     })
     .on("mouseover", function (d) {
-      // neu de chuot vao
+      
       d3
-        .select(this) // this dc tu hieu la path vi selectALL o tren
+        .select(this) // "this" wird automatisch als path wegen selectAll von oben versteht
         .style("opacity", 1)
         .style("stroke-width", 3);
       tip.show(d);
     })
     .on("mouseout", function (d) {
-      // neu di chuot ra
+      
       d3
         .select(this)
         .style("opacity", 0.8)
