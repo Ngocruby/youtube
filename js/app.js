@@ -14,14 +14,14 @@ var tip = d3
   });
 
 var width = window.outerWidth, // xac dinh chieu dai cua Browser -Detect Browser-Width
-  height = window.outerHeight; //xac dinh chieu cao
+  height = window.outerHeight; //xac dinh chieu cao Detect Browser-Height
 
 var svg = d3
   .select("body") // chon body element
   .append("svg") // them svg vao body - append la funktion
   .attr("id", "map")
-  .attr("width", width) // set do dai cho svg - attr la atrribut
-  .attr("height", height) // set chieu cao cho svg
+  .attr("width", width) // set width for svg
+  .attr("height", height) // set height for svg
 /*
 .append("g") // them element g vao trong svg - g viet tat cua group
 .attr("class", "map"); // them attribu class ten map - add attribut
@@ -51,7 +51,7 @@ function ready(error, world_countries, youtube) {
   var overlay = youtube.overlay;
   var top = youtube.top;
 
-  player = new YT.Player("player", { //wireframe für Musik-Video
+  player = new YT.Player("player", { //wireframe fuer Musik-Video
     height: "360",
     width: "400",
     videoId: top[0], // die ID von beliebtesten Video rausnehmen

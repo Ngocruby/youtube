@@ -16,14 +16,14 @@
     /* eslint-disable global-require */
     // CommonJS
     var d3Collection = require('d3-collection'),
-        d3Selection = require('d3-selection')
+        d3Selection = require('d3-selection');
     module.exports = factory(d3Collection, d3Selection)
     /* eslint-enable global-require */
   } else {
     // Browser global.
     var d3 = root.d3
     // eslint-disable-next-line no-param-reassign
-    root.d3.tip = factory(d3, d3)
+    root.d3.tip = factory(d3, d3);
   }
 }(this, function(d3Collection, d3Selection) {
   // Public - contructs a new tooltip
@@ -36,13 +36,13 @@
         node      = initNode(),
         svg       = null,
         point     = null,
-        target    = null
+        target    = null;
 
     function tip(vis) {
       svg = getSVGNode(vis)
       if (!svg) return
-      point = svg.createSVGPoint()
-      document.body.appendChild(node)
+      point = svg.createSVGPoint();
+      document.body.appendChild(node); 
     }
 
     // Public - show the tooltip on the screen
@@ -94,12 +94,12 @@
     // eslint-disable-next-line no-unused-vars
     tip.attr = function(n, v) {
       if (arguments.length < 2 && typeof n === 'string') {
-        return getNodeEl().attr(n)
+        return getNodeEl().attr(n);
       }
 
       var args =  Array.prototype.slice.call(arguments)
-      d3Selection.selection.prototype.attr.apply(getNodeEl(), args)
-      return tip
+      d3Selection.selection.prototype.attr.apply(getNodeEl(), args);
+      return tip;
     }
 
     // Public: Proxy style calls to the d3 tip container.
@@ -117,7 +117,7 @@
 
       var args = Array.prototype.slice.call(arguments)
       d3Selection.selection.prototype.style.apply(getNodeEl(), args)
-      return tip
+      return tip;
     }
 
     // Public: Set or get the direction of the tooltip
@@ -127,7 +127,7 @@
     //
     // Returns tip or direction
     tip.direction = function(v) {
-      if (!arguments.length) return direction
+      if (!arguments.length) return direction;
       direction = v == null ? v : functor(v)
 
       return tip
@@ -139,10 +139,10 @@
     //
     // Returns offset or
     tip.offset = function(v) {
-      if (!arguments.length) return offset
-      offset = v == null ? v : functor(v)
+      if (!arguments.length) return offset;
+      offset = v == null ? v : functor(v);
 
-      return tip
+      return tip;
     }
 
     // Public: sets or gets the html value of the tooltip
@@ -151,10 +151,11 @@
     //
     // Returns html value or tip
     tip.html = function(v) {
-      if (!arguments.length) return html
+      if (!arguments.length) 
+      return html;
       html = v == null ? v : functor(v)
 
-      return tip
+      return tip;
     }
 
     // Public: destroys the tooltip and removes it from the DOM
@@ -163,9 +164,9 @@
     tip.destroy = function() {
       if (node) {
         getNodeEl().remove()
-        node = null
+        node = null;
       }
-      return tip
+      return tip;
     }
 
     function d3TipDirection() { return 'n'; }

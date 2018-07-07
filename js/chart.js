@@ -27,7 +27,7 @@ svg.call(tip2);
 
 var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
-  genresForLand = youtube.genresForLand;
+  genresForLand = youtube.genresForLand;// Man bekommt hier ein Objekt, das alle Information von Genre in allen Ländern
 
   //alle key(Name des Landes) nehmen, Object.keys ist um die Object zu Array zu aendern
   var countryKeys = Object.keys(genresForLand);
@@ -68,7 +68,7 @@ function drawMap(data) {  // define drawing Map in einer Funktion
 
   // x-Achse
   var x = d3.scaleBand()
-    .rangeRound([0, width], .1)
+    .rangeRound([0, width], 0.1)
     .padding(0.1);              // Abstand zwischen Spalten
   //y-Achse
   var y = d3.scaleLinear()
