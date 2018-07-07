@@ -28,11 +28,16 @@ svg.call(tip2);
 var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
   genresForLand = youtube.genresForLand;
+<<<<<<< HEAD
 console.log(genresForLand);
   //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwande
   
+=======
+  console.log(genresForLand);
+  //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwanden
+>>>>>>> 8a7e6508ae8768eb30ab6be2e197bebec1c16190
   var countryKeys = Object.keys(genresForLand);
-console.log(countryKeys);
+  console.log(countryKeys);
 
   // Dropdown Countries
   var myDiv = document.getElementById("myDiv"); //myDiv befindet sich im File chart.html
@@ -60,18 +65,18 @@ console.log(countryKeys);
 
 $(document).on('change', '#mySelect', function (event) { // detect changes von ID:mySelect
   var value = event.target.value; // take countries' names
-  var data = genresForLand[value];// genre for Land
+  var data = genresForLand[value]; // genre for Land
   drawMap(data);
 });
 
 
-function drawMap(data) {  // define drawing Map in einer Funktion
+function drawMap(data) { // define drawing Map in einer Funktion
   $("#chart").html('');
 
   // x-Achse
   var x = d3.scaleBand()
-    .rangeRound([0, width], .1)
-    .padding(0.1);              // Abstand zwischen Spalten
+    .rangeRound([0, width], 0.1)
+    .padding(0.1); // Abstand zwischen Spalten
   //y-Achse
   var y = d3.scaleLinear()
     .range([height, 0]);
