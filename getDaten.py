@@ -1,10 +1,11 @@
 #Diese Datei ist für das Retrieval der Daten für Music Map und BarChart
 # -*- coding: utf-8 -*-
-# Funktion "requets" und " json" werden importiert 
+# Funktion "requets" und " json" werden erstmals importiert 
 import requests  # Funktion um Link zu verlinken
 import json  # Funktion um die Datei zu json zu formatieren
 
-# Restcountries.eu erhaelt die ID, Alphacode von den Laendern. Wir wollen die Daten von den Laender herausnehmen und mit den YouTube API verlinken.
+# Restcountries.eu erhält die ID, Alphacode von den Ländern. Wir wollen die Daten von den Länder herausnehmen und mit den YouTube API verlinken.
+# Funktion wird here definieren
 def getYoutube():
     url = 'https://restcountries.eu/rest/v2/all' #Variable url ist eine URL von Restcountries
     r = requests.get(url)  #als Text lesen, verlinken
@@ -15,7 +16,7 @@ def getYoutube():
 
     #Schleife für die Übernehmung des Country-ID und -Alphacode in Restcountries zum YouTube-API
     #Schleife fängt von erste Position(0) an 
-    #Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video (das Topvideo) und items(die 50 Topvideos).Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video( das Topvideo) und items(die 50 Topvideos).
+    #Aus der Erstellung der Schleife des Json Datei  erhalten wir alle alpha2Code, die wir nachher für den API (url2) verwenden. Schließlich kriegen wir eine Objekt „videoObject“, welches alle Ländern der Welt erhält. In jedem Land des Objektes gibt es alpha2Code, alpha3Code, region, name, video (das Topvideo) und items(die 50 Topvideos).
     index = 0
     for country in countries:
         name = country['name']
@@ -49,12 +50,12 @@ def getYoutube():
 
     print(total)
     #die Anzahl der Häufigkeit des Videos sortieren
-    # reverse um den häufigsten Wert zu kriegen, sonst bekommen wir der aufstiegende Wert
-    #ordnen ID des Videos nach der aufstiegenden Häufigkeit zu
     total_keys = total.keys()
-    total_values = sorted( 
+    total_values = sorted( #ordnen ID des Videos nach der aufstiegenden Häufigkeit zu 
         total.values(),
-        reverse=True)  
+        reverse=True)  # reverse um den häufigsten Wert zu kriegen, sonst bekommen wir der aufstiegende Wert
+    
+    #Array von Top Music Videos erstellen
     top = [] 
     for value in total_values:
         for key in total_keys:
@@ -63,6 +64,7 @@ def getYoutube():
                 break
 
     # Colors: Wir haben festgelegt, dass Farbe Rot als die am meinsten geschaute MV repräsentiert. Die folgende Stelle sind Lila, Blau, Green, Yellow, Orange.
+    # CSS Farbesname
     colors = [
         # Basic
         '#ff0000',  # Red
@@ -117,7 +119,7 @@ def getYoutube():
         '#cd6600',  # Orange
         '#9a3400',  # Red Orange
     ]
-    #ordnen Farbe nach der aufstiegenden Haeufigkeit des Laenders zu
+    #ordnen Farbe nach der abstiegenden Häufigkeit des Länders zu
     overlay = {} 
     index = 0
     for key in top:
@@ -127,10 +129,10 @@ def getYoutube():
         index += 1
     print("OVERLAY")
 
-    # Genres For Lands um keys von topics zu nehmen(z.B./m/06ntj)
-    genresForLand = {}  #leeren objekt
+    # GenresForLands um keys von topics zu nehmen(z.B./m/06ntj)
+    genresForLand = {}  #genresforLand als leeren objekt erstellen
     
-    for videoObject in videos:  #schleife
+    for videoObject in videos:
         land = videoObject['name'] # das Key "Name" von jedem videoObjekt herausnehmen 
         items = videoObject['items'] #das Key "items" von jedem videoObjekt herausnehmen 
         for item in items: #Schleife in items
@@ -156,8 +158,7 @@ def getYoutube():
     print(genresForLand)
 
     #Genres For Land2 um die value von topic zu nehmen(z.B. /m/06ntj kann man nicht wissen, welche genre es ist. Hier in genresForLand2 werden wir wissen, dass /m/06ntj Sport ist)
-    
-    
+       
     genresForLand2 = {}
 
 # Objekt-topics erhält alle genres, die in Youtube ist
@@ -256,7 +257,7 @@ def getYoutube():
     youtube['genresForLand'] = genresForLand2 # Array-Top zum Key " youtube['genresForLand']" hinzufügen 
 
     print("YOUTUBE")
-    with open('./json/youtube.json', 'w') as outfile: # wir speichern die Daten in einem nachträglichen Json-Datei
+    with open('./json/youtube.json', 'w') as outfile: # wir speichern die Daten in einem nachträglichen Json-Datei (youtube.json)
         json.dump(youtube, outfile)
 
     

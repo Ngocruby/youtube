@@ -6,6 +6,7 @@ var margin = {
   bottom: 30,
   left: 40
 };
+//Breite und Höhe des Charts
 var width = 960 - margin.left - margin.right;
 var height = 500 - margin.top - margin.bottom;
 
@@ -28,22 +29,22 @@ svg.call(tip2);
 
 var genresForLand;
 d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
-  genresForLand = youtube.genresForLand; // herausnehmen das Objekt-genresForLand
+  genresForLand = youtube.genresForLand; //  das Objekt-genresForLand herausnehmen
   console.log(genresForLand);
-  //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwanden
+  //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwandeln
   var countryKeys = Object.keys(genresForLand); // stellen neue Array-countryKeys um den Name jedes Land herzunehmen
   console.log(countryKeys);
 
   // Dropdown Countries
   var myDiv = document.getElementById("myDiv"); //myDiv befindet sich in Datei chart.html
 
-  //Create and append select list
+  //Auswahlliste erstellen und hinzufügen
   var selectList = document.createElement("select"); // für Select-HTML
   selectList.setAttribute("id", "mySelect"); //  stellen die ID für Select-HTML
   myDiv.appendChild(selectList); // hinzufügen "selectList" zu Element "myDiv"
 
-  //Create and add the Options to the DropDownList.
-  for (var i = 0; i < countryKeys.length; i++) {  //schleife 
+  //Optionen für Auswahlliste erstellen und addieren 
+  for (var i = 0; i < countryKeys.length; i++) {   
     var option = document.createElement("option"); // erstellen Obtion-HTML
     option.setAttribute("value", countryKeys[i]); // hinzufügen  "Value"
     option.text = countryKeys[i]; // erstellen "Text"
@@ -53,14 +54,14 @@ d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtu
   var country = countryKeys[0]; // take the 1st value on coutryKey (in this case: Afghanistan)
   console.log(genresForLand);
   console.log(country);
-  var data = genresForLand[country]; // herausnehmen Data für jedes Land
+  var data = genresForLand[country]; //  Data für jedes Land herausnehmen
 
   drawMap(data); // Funktion "drawMap" läuft
 });
 
 $(document).on('change', '#mySelect', function (event) { // detect changes von ID:mySelect
   var value = event.target.value; // take countries' names
-  var data = genresForLand[value]; // genre for Land
+  var data = genresForLand[value]; // genres für Länder
   drawMap(data);
 });
 
@@ -93,13 +94,13 @@ function drawMap(data) { // define drawing Map in a function
   y.domain([0, d3.max(data, function (d) {
     return d.total;
   })]);
-
+  // Add the x-axis.
   svg.append("g")
     .attr("transform", "translate(0," + height + ")")
     .call(xAxis)
     .attr("id", "bars")
     .attr("class", "x axis");
-
+  // creat the y-axis.
   svg.append("g")
     .attr("class", "y axis")
     .call(yAxis)

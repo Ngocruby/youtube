@@ -14,15 +14,15 @@ var tip = d3
     );
   });
 
-var width = window.outerWidth, // Feststellen Browser-Breite
-  height = window.outerHeight; //Feststellen Browser-Höhe
+var width = window.outerWidth, //  Browser-Breite feststellen
+  height = window.outerHeight; //Browser-Höhe feststellen
 
 var svg = d3
-  .select("body") // Selectieren body-element
-  .append("svg") // Hinzufügen svg zu body-element 
-  .attr("id", "map") // Hinzufügen neue Attribute "id",
-  .attr("width", width) // setzen die Breire für svg
-  .attr("height", height) // setzen die Höhe für svg
+  .select("body") //  body-element selectieren
+  .append("svg") // svg zu body-element hinzufügen 
+  .attr("id", "map") // neue Attribute "id" hinzufügen 
+  .attr("width", width) // die Breire für svg setzen 
+  .attr("height", height) // die Höhe für svg setzen 
 
 var path = d3.geoPath();
 
