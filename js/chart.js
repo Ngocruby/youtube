@@ -28,7 +28,7 @@ var svg = d3.select("#bar").append("svg")
 svg.call(tip2);
 
 var genresForLand;
-d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtube.json
+d3.json("./json/youtube.json", function (error, youtube) { //Hier rufen wir Datei youtube.json an
   genresForLand = youtube.genresForLand; //  das Objekt-genresForLand herausnehmen
   console.log(genresForLand);
   //alle key(Name des Landes) nehmen, Object.keys ist um die Object auf Array umzuwandeln
@@ -44,6 +44,7 @@ d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtu
   myDiv.appendChild(selectList); // hinzufügen "selectList" zu Element "myDiv"
 
   //Optionen für Auswahlliste erstellen und addieren 
+  //Hier ist Schleife durch alle Ländern in Array. In jeder Iteration wird eine Option in der Auswahlliste addiert
   for (var i = 0; i < countryKeys.length; i++) {   
     var option = document.createElement("option"); // erstellen Obtion-HTML
     option.setAttribute("value", countryKeys[i]); // hinzufügen  "Value"
@@ -58,7 +59,7 @@ d3.json("./json/youtube.json", function (error, youtube) { //get daten aus youtu
 
   drawMap(data); // Funktion "drawMap" läuft
 });
-
+//Hier ist Funktion, um die Auswahl von Option zu erkennen
 $(document).on('change', '#mySelect', function (event) { // detect changes von ID:mySelect
   var value = event.target.value; // take countries' names
   var data = genresForLand[value]; // genres für Länder
